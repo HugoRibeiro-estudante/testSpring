@@ -95,4 +95,33 @@ public class ClientRepositoryTest {
 			Optional<Client> resultado = repositorio.findById(id);
 			Assertions.assertTrue(resultado.isEmpty());
 		}
+		
+		/*
+		 Cenário de Teste 5
+		 Objetivo: Verificar se um cliente pode ser excluído pelo cpf.
+			monta o cenário,
+				- arquivo import.sql carrega o cenário (clientes cadastrados)
+				- cpf de um cliente cadastrado (10919444522)
+			executa a ação
+				- executar um método para excluir um cliente pelo cpf (não existe ainda).
+				- buscar um cliente pelo cpf (não existe)
+			e valida a saída.
+				- a busca deve retornar vazia.	
+		 */
+		@Test
+		public void testarSeDeleteApagaUmClientePorCpfExiste() {
+			String cpfExistente = "10619244881";
+			repositorio.deleteByCpf(cpfExistente);
+			System.out.println(repositorio.findAll().size());
+			Optional<Client> resultado = repositorio.findByCpf(cpfExistente);
+			Assertions.assertTrue(resultado.isEmpty());
+		}
+		
+		@Test
+		public void testar() {
+			double salarioI=2000;
+			repositorio.deleteByIncomeGreaterThan(salarioI);
+			List<Client> resultado = repositorio.findByIncomeGreaterThan(salarioI);
+			Assertions.assertTrue(resultado.isEmpty());
+		}
 }
