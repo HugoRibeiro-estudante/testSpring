@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -14,9 +16,17 @@ import com.iftm.client.repositories.ClientRepository;
 
 @DataJpaTest
 public class ClientRepositoryTest {
+		//private List<Client> clientesCadastrados;
 		
 		@Autowired
 		private ClientRepository repositorio;
+
+		/*
+		@BeforeEach
+		private void setupAll() {
+			clientesCadastrados = repositorio.findAll();
+		}
+		*/
 		
 		/**
 		 * Cenário de teste 1
@@ -118,10 +128,47 @@ public class ClientRepositoryTest {
 		}
 		
 		@Test
-		public void testar() {
+		public void TestarApagarSalariosMaioresQueValorExistente() {
 			double salarioI=2000;
 			repositorio.deleteByIncomeGreaterThan(salarioI);
 			List<Client> resultado = repositorio.findByIncomeGreaterThan(salarioI);
 			Assertions.assertTrue(resultado.isEmpty());
+		}
+		
+		/**
+		 * Exemplo de sala 01
+		 * Cenário de Teste - buscar clientes que tenham CPF iniciados com determinado número.
+		 * 
+		 */
+		@Test
+		void testaBuscaClientesInicioCPFQueExiste() {
+			// definir cenário
+			String parteCpf = "104";			
+			int tamanhoEsperado = 2;
+			String cpfEsperados[] = {"10419244771", "10419344882"};
+
+			//execução do método que está sendo testado
+			List<Client> listaClientes = repositorio.findByStartingWith(parteCpf);
+			
+			//comparação
+			// existe elementos na lista
+			Assertions.assertFalse(listaClientes.isEmpty());
+			Assertions.assertEquals(tamanhoEsperado, listaClientes.size());
+			for (int i = 0; i < cpfEsperados.length; i++) {
+				Assertions.assertEquals(cpfEsperados[i], listaClientes.get(i).getCpf());	
+			}			
+			
+		}
+		
+		/**
+		 * Exemplo de sala 02
+		 * Cenário de Teste - buscar clientes que tenham no mínimo X filhos
+		 * 
+		 */
+		@Test
+		void testaBuscaClientesQuantidadeMinimaFilhos() {
+			//definir uma variável com a quantidade de filhos// propor algum método de repositorio que recebe a String e retorna uma lista de clientes
+			// comparar se a lista retornada é diferente de vazio
+			// comparar se os elementos retornados estão corretos.
 		}
 }

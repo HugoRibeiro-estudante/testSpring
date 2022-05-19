@@ -18,6 +18,10 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 	public void deleteByIncomeGreaterThan(double salarioI);
 
 	public List<Client> findByIncomeGreaterThan(double salarioI);
+
+	public List<Client> findByCpfLike(String parteCpf);
+
+	public List<Client> findByStartingWith(String parteCpf);
 	
 	
 }
