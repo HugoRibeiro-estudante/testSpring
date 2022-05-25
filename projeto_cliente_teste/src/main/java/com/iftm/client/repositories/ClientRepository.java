@@ -3,6 +3,8 @@ package com.iftm.client.repositories;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -21,7 +23,12 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
 	public List<Client> findByCpfLike(String parteCpf);
 
-	public List<Client> findByStartingWith(String parteCpf);
+	public List<Client> findByCpfStartingWith(String parteCpf);
+	
+	/*
+	 * Método proposto para trabalhar com novas funcionalidades na atividade de Mockito
+	 */
+	Page<Client> findByIncome(Double income, Pageable pageable);
 	
 	
 }

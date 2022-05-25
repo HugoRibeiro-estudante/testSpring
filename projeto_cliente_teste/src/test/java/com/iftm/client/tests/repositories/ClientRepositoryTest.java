@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -148,7 +146,7 @@ public class ClientRepositoryTest {
 			String cpfEsperados[] = {"10419244771", "10419344882"};
 
 			//execução do método que está sendo testado
-			List<Client> listaClientes = repositorio.findByStartingWith(parteCpf);
+			List<Client> listaClientes = repositorio.findByCpfStartingWith(parteCpf);
 			
 			//comparação
 			// existe elementos na lista

@@ -36,6 +36,15 @@ public class ClientService {
 		Client entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 		return new ClientDTO(entity);
 	}
+
+	/*
+	 * Método proposto para trabalhar com novas funcionalidades na atividade de Mockito
+	 */
+	@Transactional(readOnly = true)
+	public Page<ClientDTO> findByIncome(PageRequest pageRequest, Double income) {
+		Page<Client> list = repository.findByIncome(income, pageRequest);		
+		return list.map(x -> new ClientDTO(x));
+	}	
 	
 	@Transactional
 	public ClientDTO insert(ClientDTO dto) {
