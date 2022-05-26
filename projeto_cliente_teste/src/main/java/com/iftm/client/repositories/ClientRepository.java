@@ -16,22 +16,26 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 	 * Métodos propostos nas atividades de JUNIT
 	 */
 
-	public void deleteByCpf(String cpfExistente);
+	void deleteByCpf(String cpfExistente);
 
-	public Optional<Client> findByCpf(String string);
-	
+	Optional<Client> findByCpf(String string);	
 
-	public void deleteByIncomeGreaterThan(double salarioI);
+	void deleteByIncomeGreaterThan(double salarioI);
 
-	public List<Client> findByIncomeGreaterThan(double salarioI);
+	List<Client> findByIncomeGreaterThan(double salarioI);
 
-	public List<Client> findByCpfLike(String parteCpf);
+	List<Client> findByCpfLike(String parteCpf);
 
-	public List<Client> findByCpfStartingWith(String parteCpf);
+	List<Client> findByCpfStartingWith(String parteCpf);
 	
 	/*
-	 * Métodos propostos para trabalhar com novas funcionalidades na atividade de Mockito
+	 * Métodos propostos para trabalhar com novas funcionalidades na atividade de Mockito.
+	 * Elas também deveriam ser testadas no ClientRepositorTest
+	 * É possível converter uma list em uma Page, mas é bem complexo.
 	 */
 	Page<Client> findByIncome(Double income, Pageable pageable);
+	Page<Client> findByIncomeGreaterThan(double salarioI, Pageable pageable);
+	Page<Client> findByCpfLike(String parteCpf, Pageable pageable);
+	Page<Client> findByCpfStartingWith(String parteCpf, Pageable pageable);
 	
 }
