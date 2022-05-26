@@ -12,10 +12,14 @@ import com.iftm.client.entities.Client;
 
 @Repository
 public interface ClientRepository extends JpaRepository<Client, Long> {
+	/*
+	 * Métodos propostos nas atividades de JUNIT
+	 */
 
 	public void deleteByCpf(String cpfExistente);
 
 	public Optional<Client> findByCpf(String string);
+	
 
 	public void deleteByIncomeGreaterThan(double salarioI);
 
@@ -26,9 +30,8 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 	public List<Client> findByCpfStartingWith(String parteCpf);
 	
 	/*
-	 * Método proposto para trabalhar com novas funcionalidades na atividade de Mockito
+	 * Métodos propostos para trabalhar com novas funcionalidades na atividade de Mockito
 	 */
 	Page<Client> findByIncome(Double income, Pageable pageable);
-	
 	
 }
