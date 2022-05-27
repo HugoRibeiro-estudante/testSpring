@@ -7,6 +7,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import com.iftm.client.repositories.ClientRepository;
@@ -70,24 +73,36 @@ public class ClienteServiceTest {
 	 * Cenário de Teste : método findByIncomeGreaterThan retorna a página com clientes corretos
 	 * Entrada:
 	 * 		- Paginação:
-	 * 			- Pagina = 0;
-	 * 			- 3
+	 * 			- Pagina = 1;
+	 * 			- 2
 	 * 			- Asc
 	 * 			- Income
-	 * 		- Income: 000
+	 * 		- Income: 4800.00
+	 * 		- Clientes:
+        {
+            "id": 8,
+            "name": "Toni Morrison",
+            "cpf": "10219344681",
+            "income": 10000.0,
+            "birthDate": "1940-02-23T07:00:00Z",
+            "children": 0
+        }
 	 * Resultado:
-	 * 		- ResourceNotFoundException
+	 * 		Page com o cliente acima
 	 */
 	@Test
 	public void testarApagarRetornaExceptionQuandoIDNaoExiste2() {
 		//construir cenário
 		//entrada
-		Long idNaoExistente = 1000l;
+		PageRequest pageRequest = PageRequest.of(1, 2, Direction.valueOf("ASC"), "income");
+		Double entrada = 4800.00;
+
+		//Page<Client> pag = new PageImpl<>(lista, pageRequest, tamanho_lista);
+
 		//configurar Mock
-		Mockito.doThrow(EmptyResultDataAccessException.class).when(rep).deleteById(idNaoExistente);
+
 		//executar o teste
-		Assertions.assertThrows(ResourceNotFoundException.class, ()->{servico.delete(idNaoExistente);});
+
 		//verificar as execuções da classe mock e de seus métodos
-		Mockito.verify(rep, Mockito.times(1)).deleteById(idNaoExistente);
 	}		
 }
