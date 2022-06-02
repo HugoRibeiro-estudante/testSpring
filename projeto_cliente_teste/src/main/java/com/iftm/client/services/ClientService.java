@@ -49,11 +49,17 @@ public class ClientService {
 	/*
 	 * Método proposto para trabalhar com novas funcionalidades na atividade de Mockito
 	 */
-	//@Transactional(readOnly = true)
-	//public Page<ClientDTO> findByIncomeGreaterThan(PageRequest pageRequest, Double income) {
-	//	Page<Client> list = repository.findByIncomeGreaterThan(income, pageRequest);		
-	//	return list.map(x -> new ClientDTO(x));
-	//}
+	@Transactional(readOnly = true)
+	public Page<ClientDTO> findByIncomeGreaterThan(PageRequest pageRequest, Double income) {
+		Page<Client> list = repository.findByIncomeGreaterThan(income, pageRequest);		
+		return list.map(x -> new ClientDTO(x));
+	}
+	
+	@Transactional(readOnly = true)
+	public Page<ClientDTO> findByCpfLike(PageRequest pageRequest, String cpf) {
+		Page<Client> list = repository.findByCpfLike(cpf, pageRequest);
+		return list.map(x -> new ClientDTO(x));
+	}
 	
 	@Transactional
 	public ClientDTO insert(ClientDTO dto) {
@@ -91,5 +97,7 @@ public class ClientService {
 		entity.setBirthDate(dto.getBirthDate());
 		entity.setChildren(dto.getChildren());
 	}
+
+	
 
 }

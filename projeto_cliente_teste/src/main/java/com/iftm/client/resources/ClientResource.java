@@ -62,7 +62,37 @@ public class ClientResource {
 		Page<ClientDTO> list = service.findByIncome(pageRequest, income);
 		return ResponseEntity.ok().body(list);
 	}
+	/* Mudança
+	 * Novo método: retorna uma lista paginada baseada no salário
+	 */
+	@GetMapping(value = "/incomeGreaterThan/")
+	public ResponseEntity<Page<ClientDTO>> findByIncomeGreaterThan(
+			@RequestParam(value = "income", defaultValue = "0") Double income,
+			@RequestParam(value = "page", defaultValue = "0") Integer page,
+			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
+			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
+			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) 
+	{
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		Page<ClientDTO> list = service.findByIncomeGreaterThan(pageRequest, income);
+		return ResponseEntity.ok().body(list);
+	}
 	
+	/* Mudança
+	 * Novo método: retorna uma lista paginada baseada no cpf com like
+	 */
+	@GetMapping(value = "/cpf/")
+	public ResponseEntity<Page<ClientDTO>> findByCPFLike(
+			@RequestParam(value = "cpf", defaultValue = "") String cpf,
+			@RequestParam(value = "page", defaultValue = "0") Integer page,
+			@RequestParam(value = "linesPerPage", defaultValue = "12") Integer linesPerPage,
+			@RequestParam(value = "direction", defaultValue = "ASC") String direction,
+			@RequestParam(value = "orderBy", defaultValue = "name") String orderBy) 
+	{
+		PageRequest pageRequest = PageRequest.of(page, linesPerPage, Direction.valueOf(direction), orderBy);
+		Page<ClientDTO> list = service.findByCpfLike(pageRequest, "%"+cpf+"%");
+		return ResponseEntity.ok().body(list);
+	}	
 	@PostMapping
 	public ResponseEntity<ClientDTO> insert(@RequestBody ClientDTO dto) {
 		dto = service.insert(dto);
