@@ -135,7 +135,6 @@ public class ClienteServiceTest {
 		lista.add(new Client(8L, "Toni Morrsion", "10219344681", 10000.0, Instant.parse("1940-02-23T07:00:00Z"), 0));
 
 		Page<Client> pag = new PageImpl<>(lista, pageRequest, 1);
-
 		//configurar Mock
 		Mockito.when(rep.findByIncomeGreaterThan(entrada, pageRequest)).thenReturn(pag);
 		//executar o teste
