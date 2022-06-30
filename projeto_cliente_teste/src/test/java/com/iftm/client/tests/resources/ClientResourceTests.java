@@ -63,7 +63,31 @@ public class ClientResourceTests {
 				.andExpect(jsonPath("$.content[?(@.id =='%s')]", 7L).exists())
 				.andExpect(jsonPath("$.content[?(@.id =='%s')]", 4L).exists())
 				.andExpect(jsonPath("$.content[?(@.id =='%s')]", 8L).exists())
-				.andExpect(jsonPath("$.numberOfElements").value(qtdClientes));			
+				.andExpect(jsonPath("$.totalElements").value(qtdClientes));			
+	}
+	
+	@Test
+	public void testarBuscaPorIDExistenteRetornaJsonCorreto() throws Exception {
+		long idExistente = 3L;
+		ResultActions resultado = mockMvc.perform(get("/clients/{id}",idExistente)
+				.accept(MediaType.APPLICATION_JSON));
+		resultado.andExpect(status().isOk());
+		resultado.andExpect(jsonPath("$.id").exists());
+		resultado.andExpect(jsonPath("$.id").value(idExistente));
+		resultado.andExpect(jsonPath("$.name").exists());		
+		resultado.andExpect(jsonPath("$.name").value("Clarice Lispector"));
+	}
+	
+	@Test
+	public void testarBuscaPorIdNaoExistenteRetornaNotFound() throws Exception {
+		long idNaoExistente = 300L;
+		ResultActions resultado = mockMvc.perform(get("/clients/{id}", idNaoExistente)
+				.accept(MediaType.APPLICATION_JSON));
+		resultado.andExpect(status().isNotFound());
+		resultado.andExpect(jsonPath("$.error").exists());
+		resultado.andExpect(jsonPath("$.error").value("Resource not found"));
+		resultado.andExpect(jsonPath("$.message").exists());
+		resultado.andExpect(jsonPath("$.message").value("Entity not found"));
 	}
 
 }
