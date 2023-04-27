@@ -169,4 +169,13 @@ public class ClientRepositoryTest {
 			// comparar se a lista retornada é diferente de vazio
 			// comparar se os elementos retornados estão corretos.
 		}
+
+
+		@Test
+		public void testaBuscarClientePorNome(){
+
+			List<Client> listaClientes = repositorio.findByName("Hugo");
+
+		}
+
 }
