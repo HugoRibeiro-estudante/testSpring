@@ -1,9 +1,16 @@
 package com.iftm.client.tests.repositories;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -11,6 +18,8 @@ import org.springframework.dao.EmptyResultDataAccessException;
 
 import com.iftm.client.entities.Client;
 import com.iftm.client.repositories.ClientRepository;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DataJpaTest
 public class ClientRepositoryTest {
@@ -44,7 +53,7 @@ public class ClientRepositoryTest {
 			long id = 1;
 			repositorio.deleteById(id);
 			Optional<Client> resposta = repositorio.findById(id);
-			Assertions.assertFalse(resposta.isPresent());
+			assertFalse(resposta.isPresent());
 			
 		}
 		
@@ -62,7 +71,7 @@ public class ClientRepositoryTest {
 		@Test
 		public void testarSeDeleteRetornaExceptionCasoIdNaoExiste() {
 			long id = 10000;
-			Assertions.assertThrows(EmptyResultDataAccessException.class, ()->{repositorio.deleteById(id);});
+			assertThrows(EmptyResultDataAccessException.class, ()->{repositorio.deleteById(id);});
 		}
 
 		/**
@@ -79,7 +88,7 @@ public class ClientRepositoryTest {
 		public void testarSeDeleteApagaTodosRegistros() {
 			repositorio.deleteAll();
 			List<Client> resultado = repositorio.findAll();			
-			Assertions.assertTrue(resultado.isEmpty());
+			assertTrue(resultado.isEmpty());
 		}
 		
 		/**
@@ -101,7 +110,7 @@ public class ClientRepositoryTest {
 			Optional<Client> cliente = repositorio.findById(id);
 			repositorio.delete(cliente.get());
 			Optional<Client> resultado = repositorio.findById(id);
-			Assertions.assertTrue(resultado.isEmpty());
+			assertTrue(resultado.isEmpty());
 		}
 		
 		/*
@@ -122,7 +131,7 @@ public class ClientRepositoryTest {
 			repositorio.deleteByCpf(cpfExistente);
 			System.out.println(repositorio.findAll().size());
 			Optional<Client> resultado = repositorio.findByCpf(cpfExistente);
-			Assertions.assertTrue(resultado.isEmpty());
+			assertTrue(resultado.isEmpty());
 		}
 		
 		@Test
@@ -130,7 +139,7 @@ public class ClientRepositoryTest {
 			double salarioI=2000;
 			repositorio.deleteByIncomeGreaterThan(salarioI);
 			List<Client> resultado = repositorio.findByIncomeGreaterThan(salarioI);
-			Assertions.assertTrue(resultado.isEmpty());
+			assertTrue(resultado.isEmpty());
 		}
 		
 		/**
@@ -150,10 +159,10 @@ public class ClientRepositoryTest {
 			
 			//comparação
 			// existe elementos na lista
-			Assertions.assertFalse(listaClientes.isEmpty());
-			Assertions.assertEquals(tamanhoEsperado, listaClientes.size());
+			assertFalse(listaClientes.isEmpty());
+			assertEquals(tamanhoEsperado, listaClientes.size());
 			for (int i = 0; i < cpfEsperados.length; i++) {
-				Assertions.assertEquals(cpfEsperados[i], listaClientes.get(i).getCpf());	
+				assertEquals(cpfEsperados[i], listaClientes.get(i).getCpf());	
 			}			
 			
 		}
@@ -172,10 +181,141 @@ public class ClientRepositoryTest {
 
 
 		@Test
-		public void testaBuscarClientePorNome(){
+		@DisplayName("Testa o metodo que retorna o cliente com nome existente")
+		public void testaBuscarClientePorNomeExistente(){
 
-			List<Client> listaClientes = repositorio.findByName("Hugo");
+			String nome = "Jose Saramago";
+			Optional<Client> cliente = repositorio.findByName(nome.toLowerCase());
+			assertFalse(cliente.isEmpty());
+			assertEquals(nome,cliente.get().getName());
 
 		}
+
+		@Test
+		@DisplayName("Testa o metodo que retorna o cliente com nome inexistente")
+		public void testaBuscarClientePorNomeInexistente(){
+
+			String nome = "Hugo";
+			Optional<Client> cliente = repositorio.findByName(nome.toLowerCase());
+			assertFalse(cliente.isPresent());
+		}
+
+				/*
+		INSERT INTO tb_client (name, cpf, income, birth_date, children) VALUES('Jose Saramago', '10239254871', 5000.0, TIMESTAMP WITH TIME ZONE '1996-12-23T07:00:00Z', 0);
+		INSERT INTO tb_client (name, cpf, income, birth_date, children) VALUES('Jorge Amado', '10204374161', 2500.0, TIMESTAMP WITH TIME ZONE '1918-09-23T07:00:00Z', 0);
+		 */
+
+		@Test // VOLTAR DEPOIS ----------------------
+		@DisplayName("Testa o metodo que retorna varios clientes com parte de nome existente")
+		public void testaBuscarClientesPorParteDoNomeExistente(){
+
+			//Arrange
+			String parte = " Jo";
+			String clientesEsperados[] ={"Jose Saramago","Jorge Amado"};
+			//Act
+			List<Client> clientList = repositorio.findByNameStartingWith(parte);
+			//Assign
+			assertFalse(clientList.isEmpty());
+			assertEquals(2, clientList.size());
+
+		}
+
+
+		@Test
+		@DisplayName("Testa o metodo que retorna varios clientes com parte de nome inexistente")
+		public void testaBuscarClientesPorParteDoNomeInexistente(){
+
+			String parte = " xsz";
+			List<Client> clientList = repositorio.findByNameStartingWith(parte.toLowerCase());
+			assertTrue(clientList.isEmpty());
+			assertEquals(0, clientList.size());
+
+		}
+
+		@Test
+		@DisplayName("Testa o metodo que retorna varios clientes passando vazio")
+		public void testaBuscarClientePassandoVazio(){
+			String parte = "";
+			List<Client> clientList = repositorio.findByNameStartingWith(parte);
+			assertEquals(12, clientList.size());
+		}
+
+		@Test
+		@DisplayName("Testar o método que retorna vários cliente com salários superiores a um valor")
+		public void testaClientesComSalariosMaiorQue(){
+
+			double wage = 2000;
+			List<Client> clientList = repositorio.findByIncomeGreaterThan(wage);
+			assertEquals(9, clientList.size());
+			assertThat(clientList).isNotEmpty();
+			Assertions.assertThat(clientList.get(0).getIncome()).isEqualTo(2500);
+
+		}
+
+		@Test
+		@DisplayName("Testar o método que retorna vários cliente com salários inferiores a um valor")
+		public void testaClientesComSalariosMenoresQue(){
+
+			double wage = 2000;
+			List<Client> clientList = repositorio.findByIncomeLessThan(wage);
+			assertEquals(3, clientList.size());
+//			assertEquals(clientList.get(0).getIncome());
+			assertThat(clientList).isNotEmpty();
+			Assertions.assertThat(clientList.get(0).getIncome()).isEqualTo(1500);
+		}
+
+		@Test
+		@DisplayName("Testar o método que retorna vários cliente com salários entre dois valores")
+		public void testaClientesComSalariosEntre(){
+
+			double min = 2000;
+			double max = 4000;
+
+			List<Client> clientList = repositorio.findByIncomeBetween(min, max);
+			assertEquals(4, clientList.size());
+			assertThat(clientList).isNotEmpty();
+			Assertions.assertThat(clientList.get(0).getIncome()).isEqualTo(2500);
+
+		}
+
+
+		@Test
+		@DisplayName("Testar o método que retorna vários cliente baseado na sua data de aniversário.")
+		public void testaBuscarClientesPelaDataDeAniversario(){
+
+			Instant dataI = Instant.parse("2017-12-25T20:30:50Z");
+			Instant dataT = Instant.now();
+			List<Client> clientList = repositorio.findByBirthDateBetween(dataI, dataT);
+			assertThat(clientList).isNotEmpty();
+			Assertions.assertThat(clientList.get(0).getId()).isEqualTo(1);
+
+
+		}
+
+		@Test
+		@DisplayName("Testar o update (save) de um cliente. Modifique o nome, o salário e o aniversário e\n" +
+				"utilize os métodos criados anteriormente para verificar se realmente foram\n" +
+				"modificados.")
+		public void TestarSalvarNoBancoDeDados(){
+
+			Optional<Client> cliente = repositorio.findById(1L);
+			assertTrue(cliente.isPresent());
+
+			cliente.get().setName("Novo Nome");
+			cliente.get().setIncome(2500.00);
+			cliente.get().setBirthDate(Instant.parse("2000-05-04T10:30:00Z"));
+
+			Optional<Client> name = repositorio.findByName("Novo Nome");
+
+
+			List<Client> income = repositorio.findByIncomeGreaterThan(2000);
+			assertEquals(10, income.size());
+
+			List<Client> birth = repositorio.findByBirthDateBetween(Instant.parse("2017-12-25T20:30:50Z"),Instant.now());
+
+			assertEquals(0,birth.size());
+
+		}
+
 
 }

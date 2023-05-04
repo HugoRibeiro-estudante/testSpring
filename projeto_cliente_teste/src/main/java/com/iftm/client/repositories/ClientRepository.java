@@ -1,5 +1,6 @@
 package com.iftm.client.repositories;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,20 +25,27 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
 
 	void deleteByIncomeGreaterThan(double salarioI);
 
-	List<Client> findByIncomeGreaterThan(double salarioI);
+//	List<Client> findByIncomeGreaterThan(double salarioI);
 
 	List<Client> findByCpfLike(String parteCpf);
 
 	List<Client> findByCpfStartingWith(String parteCpf);
 
-	@Query("SELECT c FROM Client c WHERE LOWER(c.nome) LIKE %:nome%")
-	List<Client> findByName(@Param("nome") String nome);
+//	@Query("SELECT c FROM Client c WHERE LOWER(c.name) LIKE %:nome%")
+//	List<Client> findByNamePart(@Param("nome") String nome);
 
-	List<Client> findByWageGreater1000(@Param("salario") double salario);
+	public List<Client> findByNameStartingWith(String nome);
 
-	List<Client> findByWageLess1000(@Param("salario") double salario);
+	@Query("SELECT c FROM Client c WHERE LOWER(c.name) LIKE :nome")
+	Optional<Client> findByName(@Param("nome") String nome);
 
-	List<Client> findByWageBetween1000and1500(@Param("salario") double salario);
+	List<Client> findByIncomeGreaterThan( double salario);
+
+	List<Client> findByIncomeLessThan(double salario);
+
+	List<Client> findByIncomeBetween(double min, double max);
+
+	List<Client> findByBirthDateBetween(Instant dataI, Instant dataT);
 
 
 	/*
